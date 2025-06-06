@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        padding: 100px;
+        width: 1080px;
+        height: 1080px;
+        background: #fdf8f4;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+      }
+      .logo img {
+        width: 128px;
+        height: 39px;
+      }
+      .main-text {
+        font-size: 80px;
+        font-weight: 600;
+        color: #000;
+        line-height: 1.4;
+      }
+      .footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: 32px;
+        color: #999;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }
+      .arrow {
+        margin-left: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo">
+      <img src="/public/fp_text.png" alt="Finepreneur logo" />
+    </div>
+    <div class="main-text">{{title}}</div>
+    <div class="footer">
+      <div>#DailyInsight</div>
+      <div class="arrow">⟶</div>
+    </div>
+  </body>
+</html>
