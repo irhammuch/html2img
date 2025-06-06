@@ -1,5 +1,5 @@
 import express from 'express';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,30 +7,39 @@ import { fileURLToPath } from 'url';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Middleware
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-app.get('/html2img', async (req, res) => {
+// POST endpoint
+app.post('/html2img', async (req, res) => {
   try {
-    const title = req.query.title || "Default Title";
+    const { title = "Default Title" } = req.body;
 
+    // Load and inject HTML
     const htmlTemplate = await fs.readFile(path.join(__dirname, 'templates', 'template.html'), 'utf8');
     const html = htmlTemplate.replace('{{title}}', title);
 
+    // Launch Puppeteer
     const browser = await puppeteer.launch({
+      executablePath: '/usr/bin/chromium',
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();
-    await page.setViewport({ width: 1080, height: 1080 });
+    await page.setViewport({ width: 1080, height: 1350 });
     await page.setContent(html, { waitUntil: 'networkidle0' });
 
+    // Capture image
     const imageBuffer = await page.screenshot({ type: 'png' });
 
     await browser.close();
 
+    // Respond with image
     res.setHeader('Content-Type', 'image/png');
     res.send(imageBuffer);
   } catch (err) {
@@ -39,4 +48,5 @@ app.get('/html2img', async (req, res) => {
   }
 });
 
+// Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
